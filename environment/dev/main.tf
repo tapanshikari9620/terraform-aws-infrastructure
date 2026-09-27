@@ -1,0 +1,72 @@
+module "networking" {
+
+  source       = "../../modules/networking"
+  vpc_cidr     = var.vpc_cidr
+  project_name = var.project_name
+  environment  = var.environment
+
+  public_subnets  = var.public_subnets
+  private_subnets = var.private_subnets
+
+}
+
+module "internet_gateway" {
+  source = "../../modules/internet-gateway"
+  vpc_id = module.networking.vpc_id
+  name   = "${var.igw_name}-${var.environment}-igw"
+}
+
+module "public_route_table" {
+  source               = "../../modules/route-table"
+  vpc_id               = module.networking.vpc_id
+  name                 = "${var.project_name}-public-rt"
+  subnet_ids           = module.networking.public_subnet_ids
+  igw_id               = module.internet_gateway.igw_id
+  create_default_route = true
+}
+
+
+
+module "private_route_table" {
+  source = "../../modules/route-table"
+
+  vpc_id = module.networking.vpc_id
+
+  name = "${var.project_name}-private-rt"
+
+  subnet_ids           = module.networking.private_subnet_ids
+  nat_gateway_id       = module.nat_gateway.nat_gateway_id
+  create_default_route = true
+}
+module "nat_gateway" {
+  source = "../../modules/nat-gateway"
+
+  name = "${var.project_name}-nat"
+
+  public_subnet_id = module.networking.public_subnet_ids[0]
+}
+
+
+module "security_group" {
+  source      = "../../modules/security-group"
+  name        = "${var.project_name}-sg"
+  description = "Security group for application servers"
+  vpc_id      = module.networking.vpc_id
+  ssh_cidr_block = [
+    "0.0.0.0/0"
+  ]
+
+  http_cidr_block = [
+    "0.0.0.0/0"
+  ]
+}
+
+module "network_acl" {
+  source = "../../modules/network-acl"
+
+  vpc_id = module.networking.vpc_id
+
+  public_subnet_ids = module.networking.public_subnet_ids
+
+  private_subnet_ids = module.networking.private_subnet_ids
+}
