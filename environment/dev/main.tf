@@ -8,10 +8,10 @@ module "vpc" {
 }
 
 module "networking" {
-  project_name = var.project_name
-  environment  = var.environment
-  source       = "../../modules/networking"
-  vpc_id       = module.vpc.vpc_id
+  project_name    = var.project_name
+  environment     = var.environment
+  source          = "../../modules/networking"
+  vpc_id          = module.vpc.vpc_id
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
 
@@ -76,4 +76,27 @@ module "network_acl" {
   public_subnet_ids = module.networking.public_subnet_ids
 
   private_subnet_ids = module.networking.private_subnet_ids
+}
+
+
+
+module "ec2" {
+
+  source = "../../modules/ec2"
+
+  instance_name = var.instance_name
+
+  instance_type = var.instance_type
+
+  subnet_id = module.networking.public_subnet_ids[0]
+
+  security_group_ids = [
+    module.security_group.security_group_id
+  ]
+
+  key_name = var.key_name
+
+  associate_public_ip_address = true
+
+  environment = var.environment
 }
