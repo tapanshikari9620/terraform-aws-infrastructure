@@ -7,7 +7,7 @@ resource "aws_route_table" "main"{
 }
 
 resource "aws_route" "this"{
-    count=var.create_default_route && var.igw_id !=null ? 1:0
+    count = var.create_default_route ? 1 : 0
     route_table_id = aws_route_table.main.id
     destination_cidr_block = "0.0.0.0/0"
     gateway_id = var.igw_id

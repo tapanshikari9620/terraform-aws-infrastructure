@@ -1,10 +1,17 @@
-module "networking" {
+module "vpc" {
 
-  source       = "../../modules/networking"
+  source       = "../../modules/vpc"
   vpc_cidr     = var.vpc_cidr
   project_name = var.project_name
   environment  = var.environment
 
+}
+
+module "networking" {
+  project_name    = var.project_name
+  environment     = var.environment
+  source          = "../../modules/networking"
+  vpc_id          = module.vpc.vpc_id
   public_subnets  = var.public_subnets
   private_subnets = var.private_subnets
 
@@ -12,13 +19,13 @@ module "networking" {
 
 module "internet_gateway" {
   source = "../../modules/internet-gateway"
-  vpc_id = module.networking.vpc_id
+  vpc_id = module.vpc.vpc_id
   name   = "${var.igw_name}-${var.environment}-igw"
 }
 
 module "public_route_table" {
   source               = "../../modules/route-table"
-  vpc_id               = module.networking.vpc_id
+  vpc_id               = module.vpc.vpc_id
   name                 = "${var.project_name}-public-rt"
   subnet_ids           = module.networking.public_subnet_ids
   igw_id               = module.internet_gateway.igw_id
@@ -30,7 +37,7 @@ module "public_route_table" {
 module "private_route_table" {
   source = "../../modules/route-table"
 
-  vpc_id = module.networking.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   name = "${var.project_name}-private-rt"
 
@@ -51,7 +58,7 @@ module "security_group" {
   source      = "../../modules/security-group"
   name        = "${var.project_name}-sg"
   description = "Security group for application servers"
-  vpc_id      = module.networking.vpc_id
+  vpc_id      = module.vpc.vpc_id
   ssh_cidr_block = [
     "0.0.0.0/0"
   ]
@@ -64,9 +71,32 @@ module "security_group" {
 module "network_acl" {
   source = "../../modules/network-acl"
 
-  vpc_id = module.networking.vpc_id
+  vpc_id = module.vpc.vpc_id
 
   public_subnet_ids = module.networking.public_subnet_ids
 
   private_subnet_ids = module.networking.private_subnet_ids
+}
+
+
+
+module "ec2" {
+
+  source = "../../modules/ec2"
+
+  instance_name = var.instance_name
+
+  instance_type = var.instance_type
+
+  subnet_id = module.networking.public_subnet_ids[0]
+
+  security_group_ids = [
+    module.security_group.security_group_id
+  ]
+
+  key_name = var.key_name
+
+  associate_public_ip_address = true
+
+  environment = var.environment
 }
