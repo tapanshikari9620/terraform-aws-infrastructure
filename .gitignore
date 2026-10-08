@@ -17,7 +17,6 @@ override.tf.json
 
 # Terraform lock file
 # Keep this file in Git for provider version consistency.
-# .terraform.lock.hcl
 
 # IDE
 .idea/
