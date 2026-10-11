@@ -41,7 +41,7 @@ variable "db_password" {
 variable "engine_version" {
   description = "PostgreSQL engine version supported in the target region"
   type        = string
-  default     = "16.6"
+  default     = "16"
 }
 
 variable "instance_class" {
