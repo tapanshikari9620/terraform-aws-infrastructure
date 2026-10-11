@@ -56,3 +56,11 @@ variable "key_name" {
   description = "Name of the EC2 key pair"
   type        = string
 }
+
+#Rds variables
+
+variable "db_password" {
+  description = "RDS master password supplied through Jenkins"
+  type        = string
+  sensitive   = true
+}

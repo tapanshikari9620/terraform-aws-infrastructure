@@ -68,6 +68,19 @@ module "security_group" {
   ]
 }
 
+#Rds Security Group module
+
+module "rds_security_group" {
+  source      = "../../modules/security-group"
+  name        = "${var.project_name}-rds-sg"
+  description = "Security group for PostgreSQL RDS"
+  vpc_id      = module.vpc.vpc_id
+
+  ssh_cidr_block  = []
+  http_cidr_block = []
+}
+
+
 module "network_acl" {
   source = "../../modules/network-acl"
 
@@ -99,4 +112,33 @@ module "ec2" {
   associate_public_ip_address = true
 
   environment = var.environment
+}
+
+#S3 Bucket module
+
+
+module "s3" {
+  source = "../../modules/s3"
+
+  bucket_name = "tapan-dev-s3-2026-unique"
+  environment = var.environment
+}
+
+#RDS module
+
+module "rds" {
+  source = "../../modules/rds"
+
+  project_name = var.project_name
+  environment  = var.environment
+
+  subnet_ids = module.networking.private_subnet_ids
+
+  security_group_ids = [
+    module.rds_security_group.security_group_id
+  ]
+
+  db_name     = "appdb"
+  db_username = "dbadmin"
+  db_password = var.db_password
 }
