@@ -4,7 +4,7 @@ resource "aws_network_acl_rule" "public_all_out" {
   rule_number = 100
   egress      = true
 
-  protocol   = "-1"
+  protocol    = "-1"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -16,7 +16,7 @@ resource "aws_network_acl_rule" "private_all_out" {
   rule_number = 100
   egress      = true
 
-  protocol   = "-1"
+  protocol    = "-1"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
