@@ -1,0 +1,46 @@
+
+name: Terraform Plan - GitHub Actions
+
+on:
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'environment/github-actions/**'
+      - 'modules/vpc/**'
+      - '.github/workflows/terraform-plan.yml'
+
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  terraform-plan:
+    name: Validate and Plan VPC
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: environment/github-actions
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: "1.15.8"
+
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive ../../modules/vpc .
+
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      - name: Terraform Validate
+        run: terraform validate
+
+      - name: Terraform Plan
+        run: terraform plan -input=false
