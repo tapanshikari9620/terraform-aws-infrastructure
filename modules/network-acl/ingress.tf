@@ -4,7 +4,7 @@ resource "aws_network_acl_rule" "public_http_in" {
   rule_number = 100
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -19,7 +19,7 @@ resource "aws_network_acl_rule" "public_https_in" {
   rule_number = 110
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -34,7 +34,7 @@ resource "aws_network_acl_rule" "public_ssh_in" {
   rule_number = 120
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -49,7 +49,7 @@ resource "aws_network_acl_rule" "public_ephemeral_in" {
   rule_number = 130
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -64,7 +64,7 @@ resource "aws_network_acl_rule" "private_tcp_in" {
   rule_number = 100
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"
@@ -79,7 +79,7 @@ resource "aws_network_acl_rule" "private_http_in" {
   rule_number = 110
   egress      = false
 
-  protocol   = "tcp"
+  protocol    = "tcp"
   rule_action = "allow"
 
   cidr_block = "0.0.0.0/0"

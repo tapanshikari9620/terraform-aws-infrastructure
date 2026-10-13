@@ -1,12 +1,12 @@
 variable "vpc_id" {
-type=string
+  type = string
 }
 
-variable "name"{
-    type=string
+variable "name" {
+  type = string
 }
 variable "subnet_ids" {
-    type=list(string)
+  type = list(string)
 }
 
 variable "igw_id" {
