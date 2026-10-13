@@ -1,13 +1,8 @@
 
-resource "aws_vpc" "main" {
-  cidr_block           = "10.20.0.0/16"
-  enable_dns_support   = true
-  enable_dns_hostnames = true
+module "vpc" {
+  source = "../../modules/vpc"
 
-  tags = {
-    Name        = "github-actions-vpc"
-    Environment = "github-actions"
-    ManagedBy   = "terraform"
-  }
+  vpc_cidr    = "10.20.0.0/16"
+  project_name = "github-actions"
+  environment  = "practice"
 }
-
